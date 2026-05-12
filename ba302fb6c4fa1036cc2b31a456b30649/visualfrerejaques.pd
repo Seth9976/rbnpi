@@ -1,0 +1,124 @@
+//Processing sketch to display Frere Jacques
+//4 part round played in Sonic Pi 3
+//control via OSC messages sent from Sonic Pi
+//written by Robin Newman december 23rd 2017
+
+import oscP5.*;
+import netP5.*;
+
+OscP5 oscP5;
+NetAddress myRemotelocation;
+//declare variables
+int[] circle_colora = new int[3];
+int[] circle_colorb = new int[3];
+int[] circle_colorc = new int[3];
+int[] circle_colord = new int[3];
+float rada,radb,radc,radd;
+int na,nb,nc,nd;
+int chana,chanb,chanc,chand;
+
+
+void setup() {
+  size(400,400);
+  frameRate(30);
+  oscP5 = new OscP5(this,8000); //set up osc connection, localhost port 8000
+}
+
+void draw() {
+  smooth();
+  background(0);
+  //set fill colour and draw ellipse for each part (channel)
+  fill(circle_colora[0],circle_colora[1],circle_colora[2]);
+  ellipse(200+chana*9,388-na,20*rada*2,20*rada*2);
+    fill(circle_colorb[0],circle_colorb[1],circle_colorb[2]);
+  ellipse(200+chanb*9,388-nb,20*radb*2,20*radb*2);
+    fill(circle_colorc[0],circle_colorc[1],circle_colorc[2]);
+  ellipse(200+chanc*9,388-nc,20*radc*2,20*radc*2);
+    fill(circle_colord[0],circle_colord[1],circle_colord[2]);
+  ellipse(200+chand*9,388-nd,20*radd*2,20*radd*2);
+}
+
+void  mousePressed(){
+  
+}
+
+void oscEvent(OscMessage theOscMessage){
+  
+  if (theOscMessage.checkAddrPattern("/na")==true) //deal with osc "/na"
+  {
+    na = theOscMessage.get(0).intValue();
+  }
+  if (theOscMessage.checkAddrPattern("/colora")==true) //deal with osc "/colora"
+  {
+    
+    circle_colora[0]= theOscMessage.get(0).intValue();
+    circle_colora[1]= theOscMessage.get(1).intValue();
+    circle_colora[2]= theOscMessage.get(2).intValue();
+  }
+  if (theOscMessage.checkAddrPattern("/rada")==true) //deal with osc "/rada"
+  {
+    rada= theOscMessage.get(0).floatValue();
+  }
+  if (theOscMessage.checkAddrPattern("/chana")==true) //deal with osc "/chana"
+  {
+    chana= theOscMessage.get(0).intValue();
+  }
+  //repeat osc parsing for channesl b,c and d
+    if (theOscMessage.checkAddrPattern("/nb")==true)
+  {
+    nb = theOscMessage.get(0).intValue();
+  }
+  if (theOscMessage.checkAddrPattern("/colorb")==true)
+  {
+    circle_colorb[0]= theOscMessage.get(0).intValue();
+    circle_colorb[1]= theOscMessage.get(1).intValue();
+    circle_colorb[2]= theOscMessage.get(2).intValue();
+  }
+  if (theOscMessage.checkAddrPattern("/radb")==true)
+  {
+    radb= theOscMessage.get(0).floatValue();
+  }
+  if (theOscMessage.checkAddrPattern("/chanb")==true)
+  {
+    chanb= theOscMessage.get(0).intValue();
+  }
+  
+    if (theOscMessage.checkAddrPattern("/nc")==true)
+  {
+    nc = theOscMessage.get(0).intValue();
+  }
+  if (theOscMessage.checkAddrPattern("/colorc")==true)
+  {
+    circle_colorc[0]= theOscMessage.get(0).intValue();
+    circle_colorc[1]= theOscMessage.get(1).intValue();
+    circle_colorc[2]= theOscMessage.get(2).intValue();
+  }
+  if (theOscMessage.checkAddrPattern("/radc")==true)
+  {
+    radc= theOscMessage.get(0).floatValue();
+  }
+  if (theOscMessage.checkAddrPattern("/chanc")==true)
+  {
+    chanc= theOscMessage.get(0).intValue();
+  }
+  
+    if (theOscMessage.checkAddrPattern("/nd")==true)
+  {
+    nd = theOscMessage.get(0).intValue();
+  }
+  if (theOscMessage.checkAddrPattern("/colord")==true)
+  {
+    circle_colord[0]= theOscMessage.get(0).intValue();
+    circle_colord[1]= theOscMessage.get(1).intValue();
+    circle_colord[2]= theOscMessage.get(2).intValue();
+  }
+  if (theOscMessage.checkAddrPattern("/radd")==true)
+  {
+    radd= theOscMessage.get(0).floatValue();
+  }
+  if (theOscMessage.checkAddrPattern("/chand")==true)
+  {
+    chand= theOscMessage.get(0).intValue();
+  }
+}
+  

@@ -1,0 +1,44 @@
+/*
+  BlinkPWM_flip_flop_RGB pulses each colour of an RGB LED 
+ This improved version uses a formula to calculate the PWM setting
+ for each step, to give a much smoother perceived variation in brightness
+ Based on an article at http://diarmuid.ie/blog/pwm-exponential-led-fading-on-arduino-or-other-platforms
+ BlinkPWM_flop_flop_RGB modified by Robin Newman April 2015
+ Another mod: I use an array rgbPins to hold numbers
+ (I blew up pin 11 which doen't work!!)
+ */
+
+int time_delay = 2;   // set time delay (mS) duration here
+const int pwmIntervals = 255; //number of intervals in fade
+float R;   //used in calculation of brightness levels
+int rgbPins[] = {5,9,10};
+
+void setup() {                
+  for (int k = 0; k < 3; k++) {
+    pinMode(rgbPins[k], OUTPUT); // set pins 5,9,10 as outputs
+  }
+      R = (pwmIntervals * log10(2))/(log10(255));
+}
+
+void loop() { 
+  for (int k = 0; k < 3; k++) {
+    // fade rgbPin from off (0) to brightest (255)
+    int brightness = 0;
+    for (int interval = 0; interval <= pwmIntervals; interval++) {
+      // Calculate the required PWM value for this interval step
+      brightness = pow(2, (interval / R)) - 1;
+      //set the LED output to the calculated brightness
+      analogWrite(rgbPins[k], brightness);
+      delay(time_delay);
+    }
+
+    // fade rgbPin from brightest (255) to off (0)
+    for (int interval = pwmIntervals; interval >= 0; interval--) {
+      // Calculate the required PWM value for this interval step
+      brightness = pow(2, (interval / R)) - 1;
+      //set the LED output to the calculated brightness
+      analogWrite(rgbPins[k], brightness);
+      delay(time_delay);
+    }
+  }
+}

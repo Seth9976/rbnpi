@@ -1,0 +1,32 @@
+/*
+  BlinkPWM_flip_flop_RGB pulses each colour of an RGB LED 
+  from Min (0) to Max (255) and back again, repeatedly.
+ Pin allocations modified form the original
+Uses array rgbPins to hold locations 
+(I blew up pin 11 which doesn't work!!)
+ */
+
+int time_delay = 2;   // set time delay (mS) duration here
+int rgbPins[] = {5,9,10};
+
+
+void setup() { 
+  for (int k = 0; k < 3; k++) {
+    pinMode(rgbPins[k], OUTPUT); // set pins 9-11 as outputs
+  }
+}
+
+void loop() { 
+   for (int k = 0; k < 3; k++) {
+               // fade rgbPin from off (0) to brightest (255)
+      for (int brightness = 0; brightness < 255; brightness++) {
+         analogWrite(rgbPins[k], brightness);
+         delay(time_delay);
+      } 
+               // fade rgbPin from brightest (255) to off (0)
+      for (int brightness = 255; brightness >= 0; brightness--) {
+         analogWrite(rgbPins[k], brightness);
+         delay(time_delay);
+      }
+   } 
+}

@@ -1,0 +1,36 @@
+#study in g minor for Sonic Pi 2,1 by Robin Newman November 2014
+live_loop :voice do 
+sync :foo
+$s = [:prophet,:beep,:tri,:fm,:zawa].choose #set the synth each time loop foo3 finishes
+sync :change
+end
+set_volume! 1
+k=0
+with_fx :reverb,room: 0.8,mix: 0.8 do #add overall reverb
+  live_loop :foo do
+  use_synth $s #set synth. Note global variable
+    k = inc k #set up percussive beats
+    if k % 4 == 0
+      sample :bd_haus,amp: 2 #drum on 4
+    else
+      if [2,3].include? k % 4 #cymbal on 2 and 3
+        sample :drum_cymbal_soft,amp: 2
+      end
+    end
+    use_transpose 24
+    play_pattern_timed chord([:c3,:eb3,:g3].choose,:minor).shuffle,0.1, release: 0.125 #play arpeggios
+    sleep 0.1
+  end
+  live_loop :foo2 do
+    use_synth $s
+    sync :foo
+    play scale(:g4,:minor,num_octaves: 2).choose,sustain: 0.1,release: 0.1,cutoff: rrand(50,120) #play ascending scale tweaking cuttoff at random
+    sleep 0.2
+  end
+  live_loop :foo3 do
+  use_synth $s
+  sync :foo
+  play_pattern_timed scale(:g4,:minor,num_octaves: 2).reverse,0.2,sustain: 0.2,release: 0.1,amp: 0.4 #play slower descending scale
+  cue :change
+  end
+end

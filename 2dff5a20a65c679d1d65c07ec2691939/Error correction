@@ -1,0 +1,3 @@
+Corrected an error in the original version.
+Orignally used live_loop :base  changed to live_loop :bass but forgot to change the sync call in live_loop :bach. 
+Now amended

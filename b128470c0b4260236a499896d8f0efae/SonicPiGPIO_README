@@ -1,0 +1,26 @@
+These three files accompany a video on youtube illustrating Sonic Pi 3.2.1 
+running on a Raspberry Pi 3B+ conotrolling 5 LEDs connected to GPIO pins 
+using a python script incorporating an OSC server.
+
+gpoiledsosc.py is a pythons cript which interacts with the 5 leds using the 
+gpiozero library. It incorporates an OSC server which looks for the incoming 
+osc message addressed to "/LedNum" This has two parameters. First a number between 0 and 4 
+which specifies which led to control, secondly a state which is 1 if the led is to be turned on 
+and 0 if it is to be turned off.
+
+ledOSCtest.rb is a simple program to test the leds and osc server is working. It is loaded 
+into a Sonic Pi buffer and run from there. It sends a series of OSC messages of the form 
+"/LedNum",n,state to the server, where n is the number of the led to intercat with, and state 
+is 1 or 0 to indicate if it should be turned on or off.
+
+spGPIOsteroids.rb is a larger program which is run in a  Sonic Pi buffer, and which controls the leds 
+in a variety of sequences, but also triggers a note to sound for the duration for which a led is turned on. 
+Each led has a differnt note assigned to it. When a led is turned on, a note is started to sound and a reference 
+to that note is stored. When the led is turned off, the reference is retrieved and the note is killed to stop it 
+souinding. Before that its volume is reduced rapidly to zero to prevent "clicks" from sounding.
+
+The circuitry for each led is simple the +ve leg of the led is connected to a GPIO pin and the -ve leg 
+is connected to ground via a 330 ohm resistor. The layout I used utilised a raspio breadboard pi bridge to connect 
+a breadboard to the Pi. this video details it and the connections https://youtu.be/imxyzSrO0wI
+
+An installer for Sonic Pi 3.2.1 for Raspbian Buster will be released on April 3rd 2020 on the in-thread.sonic-pi.net site.

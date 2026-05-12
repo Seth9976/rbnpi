@@ -1,0 +1,84 @@
+import oscP5.*;
+import netP5.*;
+
+OscP5 oscP5;
+NetAddress sonicPi;
+
+float mx,my;
+int bs = 1;
+int tr = 0;
+PFont f;
+
+void setup(){
+  background(204);
+  frameRate(60);
+  size(100,120);
+  oscP5 = new OscP5(this, 8000);
+  sonicPi = new NetAddress("127.0.0.1",4559);//////INSERT ADDRESS REQUIRED//////////////
+  // add click rectangles
+  rect(45,15,10,10);//bs+
+  rect(45,55,10,10);//bs=1
+  rect(45,90,10,10);//bs-
+  rect(10,55,10,10);//stop
+  rect(80,55,10,10);//play
+  // Create the font
+  f = createFont("ArialNarrow-16.vlw", 12);
+  textFont(f);
+  textAlign(CENTER, CENTER);
+  fill(0);
+  text("stop",15,40);//add screen captions
+  text("play",85,40);
+  text("bs+",50,4);
+  text("bs-",50,105);
+  text("bs1",50,72);
+  text("1",48,40); //print initialbs value
+}
+
+void sendOscData(int tr,int bs) {
+  OscMessage toSend = new OscMessage("/transport");
+  toSend.add(tr);
+  toSend.add(bs);
+  oscP5.send(toSend,sonicPi);
+  //println(toSend);//for debugging
+}
+  
+void draw() {
+  mx=mouseX;
+  my=mouseY;
+  if (mousePressed) {
+    if ((mx > 44) && (mx <56 )&&(my > 89) && (my < 101)){//bs- clicked
+      bs-=1;
+      if (bs<1){
+        bs=1;
+      }     
+     //println(bs);//for debugging
+    }
+    if ((mx > 44) && (mx < 56)&&(my >14) && (my<26)) {//bs+ clicked
+      bs+=1;      
+      //println(bs);//for debugging
+    }
+    if ((mx >44)&&(mx<56)&&(my>54) && (my<66)){//bs=1 clicked
+      bs=1;
+      //println(bs);//for debugging
+    }
+
+    if ((mx >79)&&(mx<91)&&(my>54) && (my<66)){//play clicked
+      tr=1;
+      sendOscData(tr,bs);
+      //println(tr); //for debugging
+      //println(bs);
+    }
+    if ((mx >9)&&(mx<21)&&(my>54) && (my<66)) {//stop clicked
+      tr=-1;
+      sendOscData(tr,bs);
+      //println(tr); //for debugging
+    }
+    fill(204); //update bs number on the screen
+    noStroke(); //clear last entry with a background rectangle
+    rect(30,32,35,16); 
+    stroke(255); //change stroke colour to black
+    fill(0); //set fill to black
+    text(bs,48,40); //print bs value
+  }
+  delay(125); //loop delay
+}

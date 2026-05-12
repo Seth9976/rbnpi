@@ -1,0 +1,70 @@
+#Sample generation program. used with Sample play. Written by Robin Newman Nov 2015
+#the progarm is run three times with Synths saw, prophet and zawa
+#the individula outputs are recored as wave files for about three cycloes of the sound cycle
+#Each cycle lasts exactly 4 seconds 9set by metro
+#the recorded wav files are then trimmed exacty to 4 seconds length starting from the first sound,
+#and resaved as wave files called rbnzawa1, rbnsaw1 and rbnprophet1.
+#I used the open source Audacity program on a Mac to do this
+#the samples are then used in the sample play program
+use_debug false
+with_fx :reverb,room: 0.8 do
+  use_synth :prophet
+  live_loop :metro do
+    cue :tick
+    wait 2
+    cue :tick2
+    wait 2
+  end
+
+  live_loop :go1 do
+    sync :tick
+    play :c3
+    sleep 0.1
+    play :g3
+    cue :tick2
+    play :c3
+    sleep 0.1
+    play :g3
+
+  end
+
+  live_loop :go2 do
+    sync :tick
+    sleep 0.5
+    play_pattern_timed scale(:c4,:minor),[0.1],release: 0.1
+    sync :tick2
+    sleep 0.5
+    play_pattern_timed scale(:c4,:minor),[0.1],release: 0.1
+  end
+
+  live_loop :go3 do
+    sync :tick
+    sleep 0.7
+    play_pattern_timed scale(:c4,:minor).reverse,[0.1],release: 0.1
+    sync :tick2
+    sleep 0.7
+    play_pattern_timed scale(:c4,:minor).reverse,[0.1],release: 0.1
+  end
+
+  live_loop :go4 do
+    sync :tick
+    sleep 1
+    play_pattern_timed scale(:c5,:minor).reverse,[0.1],release: 0.1
+    sync :tick2
+    sleep 1
+    play_pattern_timed scale(:c5,:minor).reverse,[0.1],release: 0.1
+  end
+
+
+  live_loop :go5 do
+    sync :tick
+    sleep 0.3
+    play_pattern_timed scale(:c4,:minor,num_octaves: 2),[0.2],release: 0.2
+  end
+
+  live_loop :go6 do
+    sync :tick
+    sample :ambi_lunar_land,finish: 0.5,release: 0.1,amp: 2
+    sleep 3.9
+  end
+end

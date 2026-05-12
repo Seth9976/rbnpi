@@ -1,0 +1,199 @@
+#Puppet on a String transcribed by Robin Newman
+
+set_sched_ahead_time! 4
+v = :tri
+bv = :saw
+ba = 0.3 #b vol
+s = 1.0 / 15.5 #tempo 116 c/min
+
+dsq = 1 * s #note length definitions
+sq = 2 * s
+q = 4 * s
+qd = 6 * s
+c = 8 * s
+cd = 12 * s
+m = 16 * s
+md = 24 * s
+b = 32 * s
+bd = 48 * s
+define :pl do |notearray,durationarray,shift=0,vol=0.3,voice = :saw|
+  notearray.flatten! #flatten in place as used << instead of .concat to save space
+  durationarray.flatten!
+  with_synth voice do
+    notearray.zip(durationarray).each do |notearray,durationarray|
+      if notearray == :r
+        sleep durationarray
+      else
+        with_transpose shift do
+          play notearray,amp: vol,sustain: durationarray * 0.9,release: durationarray * 0.1
+          sleep durationarray
+        end
+      end
+    end
+  end
+end
+
+p1n = [:d5,:c5,:b4,:a4,:g4,:fs4,:d5,:r,:fs4,:e4,:c5,:r,:e4,:d4,:d4,:e4,:fs4,:g4,:a4,:b4,:a4,:d5,:r,:fs4,:e4,:c5,:r,:e4,:d4,:d4,:e4,:fs4,:g4,:a4,:b4,:d5]
+p1d = [ bd,q,q,q,q,q,q,q,q,q,q,q,q,c,q,q,q,q,q,q,q,q,q,q,q,q,q,q,c,q,q,q,q,q,q,(b + c)]
+p1n << [:r,:b4,:d5,:g4,:fs4,:e4,:fs4,:a4,:fs4,:d4,:d4,:c5,:c5,:c5,:b4,:a4,:g4]
+p1d << [(md + 2 * b),c,c,c,q,q,q,q,q,m,q,c,c,q,q,q,(q + b)]
+p1n << [:b4,:d5,:g4,:fs4,:e4,:fs4,:a4,:fs4,:d4]
+p1d << [c,c,c,q,q,q,q,q,(q + m)]
+#20
+p1n << [:c5,:c5,:c5,:b4,:a4,:g4,:e5,:e5,:e5,:d5,:c5,:d5,:d5,:cs5,:cs5,:cs5,:d5,:e5,:fs5]
+p1d << [c,c,q,q,q,(q + b),c,c,q,q,q,b,q,c,c,q,q,q,(q + 2 * b)]
+#27
+p1n2 = [:d5,:c5,:b4,:a4,:g4,:fs4,:d5,:r,:fs4,:e4,:c5,:r,:e4,:d4,:d4,:e4,:fs4,:g4,:a4,:b4,:a4,:d5,:r,:fs4,:e4,:c5,:r,:e4,:d4,:d4,:e4,:fs4,:g4,:a4,:b4,:d5]
+p1d2 = [ bd,q,q,q,q,q,q,q,q,q,q,q,q,c,q,q,q,q,q,q,q,q,q,q,q,q,q,q,c,q,q,q,q,q,q,(b + c)]
+#34 2nd beat
+p1n2 << [:r,:eb5,:db5,:c5,:bb4,:ab4,:g4,:eb5,:r,:g4,:f4,:db5,:r,:f4,:eb4,:eb4,:f4,:g4,:ab4,:bb4,:c5,:bb4,:eb5,:r,:g4,:f4,:db5,:r,:f4]
+p1d2 << [(md + 2 * b),bd,q,q,q,q,q,q,q,q,q,q,q,q,c,q,q,q,q,q,q,q,q,q,q,q,q,q,q]
+p1n2 << [:eb4,:eb4,:f4,:g4,:ab4,:bb4,:c5,:eb5,:eb4,:f4,:g4,:ab4,:bb4,:c5,:r,:ab4,:r]
+p1d2 << [c,q,q,q,q,q,q,(b + c),q,q,q,q,q,q,b,c,md]
+p2n = [:r,:d5,:g5,:b5,:d6,:e5,:d5,:c5,:b4,:r,:d6,:r,:c6,:r,:fs4,:g4,:a4,:b4,:c5,:d5]
+p2d = [c,c,c,c,m,q,q,q,q,c,c,c,c,c,q,q,q,q,q,q]
+#8
+p2n << [:r,:d6,:r,:c6,:r,:fs4,:g4,:a4,:b4,:c5,:d5,:r,:d6,:r,:a5,:r,:fs5,:r,:a5,:r,:d5,:e5,:fs5,:g5,:a5,:b5]
+p2d << [c,c,c,c,c,q,q,q,q,q,q,q,q,q,q,q,q,q,q,c,q,q,q,q,q,q]
+#12
+p2n << [:d6,:a5,:fs5,:a5,:d5,:e5,:e5,:e5,:e5,:fs5,:r,:b4,:r,:b4,:r,:b4,:r,:b4,:r,:a4,:r,:a4,:r,:a4,:r,:a4]
+p2d << [c,c,c,c,c,sq,sq,sq,sq,c,cd,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q]
+#16
+p2n << [:r,:a4,:r,:c5,:r,:d5,:r,:fs5,:g5,:fs5,:es5,:fs5,:es5,:e5,:ds5,:d5,:cs5,:d5,:r,:b4,:r,:b4,:r,:b4,:r,:b4,:r,:a4,:r,:a4,:r,:a4,:r,:a4]
+p2d << [q,q,q,q,q,q,q,q,q,q,sq,sq,sq,sq,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q]
+#20
+p2n << [:r,:a4,:r,:c5,:r,:d5,:r,:fs5,:r,:g5,:b4,:c5,:d5,:e5,:d5,:e5,:fs5,:g5,:fs5,:g5,:a5,:b5,:c6,:c6,:g5,:e5,:d5,:e5,:g5,:d5,:d5,:b4,:g4,:b4,:d5,:g5]
+p2d << [q,q,q,q,q,q,q,q,q,q,sq,sq,sq,sq,sq,sq,sq,sq,sq,sq,sq,sq,q,c,q,q,q,q,q,q,c,q,q,q,q,q]
+#24
+p2n << [:cs5,:cs5,:e5,:r,:d5,:cs5,:a4,:r,:fs4,:a4,:r,:a4,:d5,:r,:d5,:fs5,:r,:fs5,:a5,:r]
+p2d << [q,c,q,q,q,q,q,q,q,q,c,q,q,c,q,q,c,q,q,q]
+p3n = [:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4]
+p3d = [q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q]
+#8
+p3n << [:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:a3,:r,:a3,:r,:a3,:r,:a3,:r,:a3,:r,:a3,:r,:a3,:r,:a3]
+p3d << [q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q]
+#12
+p3n << [:r,:a3,:r,:a3,:r,:a3,:r,:a3,:r,:c5,:c5,:c5,:c5,:d5,:r,:g4,:r,:g4,:r,:g4,:r,:g4,:r,:fs4,:r,:fs4,:r,:fs4,:r,:fs4]
+p3d << [q,q,q,q,q,q,q,q,c,sq,sq,sq,sq,c,cd,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q]
+#16
+p3n << [:r,:d4,:r,:fs4,:r,:a4,:r,:c5,:r,:b3,:r,:b3,:r,:b3,:r,:b3,:r,:g4,:r,:g4,:r,:g4,:r,:g4,:r,:fs4,:r,:fs4,:r,:fs4,:r,:fs4]
+p3d << [q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q]
+#20
+p3n << [:r,:fs4,:r,:fs4,:r,:a4,:r,:d5,:r,:b4,:r,:e5,:e5,:e5,:c5,:b4,:c5,:e5,:b4,:b4,:g4,:d4,:g4,:b4,:b4]
+p3d << [q,q,q,q,q,q,q,q,q,q,md,q,c,q,q,q,q,q,q,c,q,q,q,q,q]
+#24
+p3n << [:a4,:a4,:cs5,:r,:b4,:a4,:fs4,:r,:d4,:fs4,:r,:fs4,:a4,:r,:a4,:d5,:r,:d5,:fs5,:r]
+p3d << [q,c,q,q,q,q,q,q,q,q,c,q,q,c,q,q,c,q,q,q]
+#27
+p3n2 = [:r,:d5,:r,:d5,:r,:g5,:r,:b5,:r,:b5,:r,:d6,:c6,:b5,:a5,:g5,:r,:a5,:fs6,:r,:a5,:e6,:r,:b4,:d5,:e5,:fs5,:g5,:a5,:b5]
+p3d2 = [q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,c,q,q,c,q,q,q,q,q,q,q,q]
+#31
+p3n2 << [:r,:a5,:fs6,:r,:a5,:e6,:r,:b4,:d5,:e5,:fs5,:g5,:a5,:b5,:r,:a5,:r,:fs5,:r,:d5,:r,:fs5,:r,:d5,:d5,:e5,:fs5,:g5,:a5,:b5]
+p3d2 << [q,q,c,q,q,c,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q]
+#35
+p3n2 << [:fs5,:fs5,:r,:fs5,:r,:d5,:r,:fs5,:g5,:g5,:r,:g5,:r,:bb4,:r,:g5,:r,:eb5,:r,:eb5,:r,:ab5,:r,:c6,:r,:c6,:r,:c6,:db6,:c6,:bb5,:ab5]
+p3d2 << [q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q]
+#39
+p3n2 << [:r,:bb5,:eb6,:r,:bb5,:db6,:r,:c5,:eb5,:f5,:g5,:ab5,:bb5,:c6,:r,:bb5,:eb6,:r,:bb5,:db6,:r,:c5,:eb5,:f5,:g5,:ab5,:bb5,:c6]
+p3d2 << [q,q,c,q,q,c,q,q,q,q,q,q,q,q,q,q,c,q,q,c,q,q,q,q,q,q,q,q]
+#43
+p3n2 << [:r,:bb5,:r,:g5,:r,:eb5,:r,:g5,:g5,:r,:g4,:r,:eb4,:r,:db4,:r,:eb4,:r,:c6,:r]
+p3d2 << [q,q,q,q,q,q,q,q,c,(md + q),q,q,q,q,q,q,q,m,c,c]
+p4n = [:r,:b3,:r,:b3,:r,:b3,:r,:b3,:r,:b3,:r,:b3,:r,:b3,:r,:b3,:r,:c4,:r,:c4,:r,:c4,:r,:c4,:r,:b3,:r,:b3,:r,:b3,:r,:b3]
+p4d = [q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q]
+#8
+p4n << [:r,:c4,:r,:c4,:r,:c4,:r,:c4,:r,:b3,:r,:b3,:r,:b3,:r,:b3,:r,:fs3,:r,:fs3,:r,:fs3,:r,:fs3,:r,:fs3,:r,:fs3,:r,:fs3,:r,:fs3]
+p4d << [q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q]
+#12
+p4n << [:r,:fs3,:r,:fs3,:r,:fs3,:r,:fs3,:d4,:g4,:g4,:g4,:g4,:a4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4]
+p4d << [q,q,q,q,q,q,q,q,c,sq,sq,sq,sq,c,cd,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q]
+#16
+p4n << [:r,:c4,:r,:d4,:r,:fs4,:r,:a4,:r,:b4,:r,:b4,:r,:b4,:r,:b4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4,:r,:d4]
+p4d << [q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q]
+#20
+p4n << [:r,:c4,:r,:d4,:r,:fs4,:r,:a4,:r,:c3,:c3,:c3,:b2,:a2,:g2,:g2,:a2,:a2,:g3,:fs3,:e3,:d3,:c4,:d4,:r,:d4,:fs4,:r,:fs4,:a4,:r,:a4,:c5,:r]
+p4d << [q,q,q,q,q,q,q,q,b,c,c,q,q,q,b,q,c,c,q,q,q,c,q,q,c,q,q,c,q,q,c,q,q,q]
+#27
+p4n2 = [:r,:b4,:r,:b4,:r,:b4,:r,:d5,:r,:g5,:r,:b5,:e5,:d5,:c5,:b4,:r,:fs5,:r,:e5,:r,:d4,:fs4,:g4,:a4,:b4,:c5,:d5]
+p4d2 = [q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,c,c,c,c,q,q,q,q,q,q,q,q]
+#31
+p4n2 << [:r,:fs5,:r,:e5,:r,:d4,:fs4,:g4,:a4,:b4,:c5,:d5,:r,:fs5,:r,:d5,:r,:a4,:r,:d5,:r,:fs4,:d4,:e4,:fs4,:g4,:a4,:b4]
+p4d2 << [c,c,c,c,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q]
+#35
+p4n2 << [:d5,:d5,:r,:a4,:r,:fs4,:r,:d5,:eb5,:eb5,:r,:bb4,:r,:g4,:r,:bb4,:r,:c5,:r,:c5,:r,:c5,:r,:eb5,:r,:ab5,:r,:c6,:f5,:eb5,:db5,:c5]
+p4d2 << [q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q]
+#39
+p4n2 << [:r,:g5,:r,:f5,:r,:eb4,:g4,:ab4,:bb4,:c5,:db5,:eb5,:r,:g5,:r,:f5,:r,:eb4,:g4,:ab4,:bb4,:c5,:db5,:eb5]
+p4d2 << [c,c,c,c,q,q,q,q,q,q,q,q,c,c,c,c,q,q,q,q,q,q,q,q]
+#43
+p4n2 << [:r,:g5,:r,:eb5,:r,:bb4,:r,:eb5,:eb5,:r,:db4,:r,:db4,:r,:bb3,:r,:db4,:r,:ab5,:r]
+p4d2 << [q,q,q,q,q,q,q,q,c,(md + q),q,q,q,q,q,q,q,m,c,c]
+p5n = [:g2,:d3,:g3,:d3,:g3,:d3,:g3,:d3,:a3,:d3,:a3,:d3,:g3,:d3,:g3,:d3,:a3,:d3,:a3,:d3,:g3,:d3,:g3,:b2,:d3,:a2,:fs2,:a2]
+p5d = [c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c]
+#11
+p5n << [:d3,:a2,:d3,:a2,:d3,:a2,:d3,:a2,:d2,:a3,:g3,:fs3,:e3,:d3,:d2,:e2,:fs2,:g2,:d3,:g3,:d3,:a3,:d3,:a3,:d3]
+p5d << [c,c,c,c,c,c,c,c,c,sq,sq,sq,sq,c,qd,dsq,dsq,c,c,c,c,c,c,c,c]
+#16
+p5n << [:a3,:d3,:a3,:d3,:g3,:d3,:g3,:d3,:g3,:d3,:g3,:d3,:a3,:d3,:a3,:d3]
+p5d << [c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c]
+#20
+p5n << [:a3,:d3,:a3,:d3,:g3,:d3,:g3,:g2,:g3,:d3,:g3,:c3,:g2,:e2,:c2,:g2,:d3,:b2,:g2]
+p5d << [c,c,c,c,c,q,q,q,q,q,q,c,c,c,c,c,c,c,c]
+#24
+p5n << [:a2,:e3,:a3,:a2,:d2,:d2,:c2,:c2,:b1,:b1,:a1,:d2]
+p5d << [c,c,c,c,cd,q,cd,q,cd,q,c,c]
+#27
+p5n2 = [:g3,:d3,:g3,:d3,:g3,:d3,:g3,:d3,:a3,:d3,:a3,:d3,:g3,:d3,:g3,:d3]
+p5d2 = [c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c]
+#31
+p5n2 << [:a3,:d3,:a3,:d3,:g3,:d3,:g3,:g2,:d2,:a1,:fs1,:a1,:d2,:a1,:d2,:a1]
+p5d2 <<  [c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c]
+#35
+p5n2 <<  [:d2,:a1,:d2,:a1,:eb2,:bb1,:eb2,:bb1,:ab2,:eb2,:ab2,:eb2,:ab2,:eb2,:ab2,:eb2]
+p5d2 <<  [c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c]
+#39
+p5n2 <<  [:bb2,:eb2,:bb2,:eb2,:ab2,:eb2,:ab2,:eb2,:bb2,:eb2,:bb2,:eb2,:ab2,:eb2,:ab2,:ab1]
+p5d2 <<  [c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c]
+#43
+p5n2 <<  [:eb2,:bb1,:g1,:bb1,:eb2,:r]
+p5d2 <<  [c,c,c,c,c,md]
+p5n2a = [:eb3,:bb2,:g2,:bb2,:r,:eb2,:db2,:c2,:bb1,:ab1,:r]
+p5d2a = [c,c,c,c,c,sq,sq,sq,sq,c,c]
+p5n2b = [:r]
+p5d2b = [(2 * b)]
+define :s2 do
+  in_thread do
+    pl(p1n2,p1d2,0,0.4,v)
+  end
+  in_thread do
+    pl(p5n2,p5d2,0,0.2,bv)
+    pl(p5n2a,p5d2a,0,0.2,bv)
+  end
+  in_thread do
+    pl(p5n2,p5d2,12,0.2,bv)
+    pl(p5n2b,p5d2b)#just rest
+  end
+  in_thread do
+    pl(p3n2,p3d2)
+  end
+  pl(p4n2,p4d2)
+end
+define :s1 do
+  in_thread do
+    pl(p1n,p1d,0,0.4,v)
+  end
+  in_thread do
+    pl(p2n,p2d)
+  end
+  in_thread do
+    pl(p3n,p3d)
+  end
+  in_thread do
+    pl(p4n,p4d)
+  end
+  pl(p5n,p5d,0,ba,bv)
+end
+
+s1
+s1
+s2

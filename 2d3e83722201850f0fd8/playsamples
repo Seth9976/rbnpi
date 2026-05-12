@@ -1,0 +1,44 @@
+#Play samples. This program uses three samples recorded from the associated sample generation program
+#written by Robin Newman Nov 2014
+#The three samples called rbnsaw1, rbnprophet1 and rbnzawa1 are each exactly 4 seconds long and play the same
+#piece but using different synths
+#The samples are played 4.0/3 seconds apart, first forwards and then in reverse.
+#The process is repeated 7 times in a thread
+#at the same time the overall volume level is increased over 12 seconds from 0 to 1
+#it then remains at this level for 32 seconds before fading out again over a further 12 seconds
+
+use_sample_pack '/Users/rbn/Desktop/samples/rbn' #samples stored here on my mac adjust to suit your system
+load_samples [:rbnsaw1,:rbnprophet1,:rbnzawa1] #preload the samples
+use_debug false
+in_thread do
+  sleep 0.1 #make sure volume 0 before starting
+  7.times do
+    sample :rbnprophet1
+    sleep 4.0/3
+    sample :rbnzawa1
+    sleep 4.0/3
+    sample :rbnsaw1
+    sleep 4.0/3
+    sample :rbnprophet1,rate: -1
+    sleep 4.0/3
+    sample :rbnzawa1,rate: -1
+    sleep 4.0/3
+    sample :rbnsaw1,rate: -1
+    sleep 4.0/3
+  end
+end
+set_volume! 0
+v = 0
+1200.times do #loop to increase volume! to 2 over 12 seconds
+  v=v+2.0/1200
+  set_volume! v
+  sleep 0.01
+end
+sleep 32+(4.0*2/3)
+1200.times do #loop to decrease the volume to 0 over 12 seconds
+  v=v-2.0/1200
+  set_volume! v
+  sleep 0.01
+end
+sleep 1 #ensure is finished before volume reset
+set_volume! 1 #so that other programs still work!

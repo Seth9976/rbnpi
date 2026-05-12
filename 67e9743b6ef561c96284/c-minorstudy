@@ -1,0 +1,88 @@
+#playing with code loops and c-minor scales. Robin Newman Nov 2014
+#this piece controls 7 loops with a metronome loops generating cues
+#which also selects a synth name from a given list and stores it in a global variable
+#a loop (vset) controls the overall volume of the piece, fading it up and down
+use_debug false
+set_volume! 0 #set initial volume
+with_fx :reverb,room: 0.8 do
+
+  live_loop :metro do
+   $S = [:tri,:prophet,:fm,:zawa,:saw].choose
+   cue :tick
+    wait 2
+    cue :tick2
+    wait 2
+  end
+
+  live_loop :vset do #volume sweeps up and down with 8 second period 4 up then 4 down
+    sync :tick
+    v=0
+    400.times do
+      set_volume! v
+      v=v+2.0/400
+      sleep 0.01
+    end
+    400.times do
+      set_volume! v
+      v=v-2.0/400
+      sleep 0.01
+    end
+  end
+
+  live_loop :go1 do #starting pedal notes
+  use_synth $S
+    sync :tick
+    play :c3
+    sleep 0.1
+    play :g3
+    cue :tick2
+    play :c3
+    sleep 0.1
+    play :g3
+
+  end
+
+  live_loop :go2 do #rising scale of c minor
+    use_synth $S
+    sync :tick
+    sleep 0.5
+    play_pattern_timed scale(:c4,:minor),[0.1],release: 0.1
+    sync :tick2
+    sleep 0.5
+    play_pattern_timed scale(:c4,:minor),[0.1],release: 0.1
+  end
+
+  live_loop :go3 do #falling scale of c minor
+    use_synth $S
+    sync :tick
+    sleep 0.7
+    play_pattern_timed scale(:c4,:minor).reverse,[0.1],release: 0.1
+    sync :tick2
+    sleep 0.7
+    play_pattern_timed scale(:c4,:minor).reverse,[0.1],release: 0.1
+  end
+
+  live_loop :go4 do #falling scale of c minor up an octave
+    use_synth $S
+    sync :tick
+    sleep 1
+    play_pattern_timed scale(:c5,:minor).reverse,[0.1],release: 0.1
+    sync :tick2
+    sleep 1
+    play_pattern_timed scale(:c5,:minor).reverse,[0.1],release: 0.1
+  end
+
+
+  live_loop :go5 do #this scale at half the speed of the others
+    use_synth $S
+    sync :tick
+    sleep 0.3
+    play_pattern_timed scale(:c4,:minor,num_octaves: 2),[0.2],release: 0.2
+  end
+
+  live_loop :go6 do #adds swishing noise
+    sync :tick
+    sample :ambi_lunar_land,finish: 0.5,release: 0.1,amp: 2
+    sleep 4
+  end
+end

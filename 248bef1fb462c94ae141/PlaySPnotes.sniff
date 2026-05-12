@@ -1,0 +1,109 @@
+#program to control Sonic Pi from Flotilla written by Robin Newman, Feb 2016
+#requires rainbow, touch keypad, slider and rotary dial modules
+#to be connected to the flotilla hub
+#also requires Sonic Pi to be running and sonic-pi-cli gem
+#to be installed
+#tested on Pi2 and Mac OSX
+make system device
+make command string
+make flotilla device
+make keypad flotillaTouch device 
+make key1 boolean
+make key2 boolean
+make key3 boolean
+make key4 boolean
+make slider flotillaSlider device
+make position number
+make base number
+make dial flotillaDial device
+make synths list of strings
+make cursynth string
+make index number
+make rainbow flotillaRainbow device
+make rainbowShade list of number
+make rainbowColor list of number
+make count number
+make ledCount number
+
+
+when start
+.add ":tri" to synths
+.add ":saw" to synths
+.add ":tb303" to synths
+.add ":fm" to synths
+.add ":mod_tri" to synths
+.set ledCount to 5
+.repeat ledCount
+..add 0 to rainbowColor
+.
+.forever
+..tell dial to "update"
+..set index to round(position *4) + 1
+..set cursynth to item index of synths
+..#say cursynth
+..#say [index]
+..
+..set count to 1
+..delete all of rainbowShade
+..repeat ledCount
+...if index = count
+....add 10 to rainbowShade
+...else
+....add 0 to rainbowShade
+...change count by 1
+..tell rainbow to "update"
+..
+..tell slider to "update"
+..set base to round(position *5)
+..#say join"base: "[base]
+..
+..tell keypad to "update"
+..if key1
+...set command to join "sonic_pi 'use_synth " cursynth
+...set command to join command "; play note(:c4)+"
+...set command to join command [base]
+...set command to join command ",sustain: 20'"
+...tell system to "run"
+...repeat until not key1
+....tell keypad to "update"
+....wait 0.05 secs
+...set command to "sonic_pi stop"
+...tell system to "run"
+..
+..if key2
+...set command to join "sonic_pi 'use_synth " cursynth
+...set command to join command "; play note(:e4)+"
+...set command to join command [base]
+...set command to join command ",sustain: 20'"
+...tell system to "run"
+...repeat until not key2
+....tell keypad to "update"
+....wait 0.05 secs
+...set command to "sonic_pi stop"
+...tell system to "run"
+..
+..if key3
+...set command to join "sonic_pi 'use_synth " cursynth
+...set command to join command "; play note(:g4)+"
+...set command to join command [base]
+...set command to join command ",sustain: 20'"
+...tell system to "run"
+...repeat until not key3
+....tell keypad to "update"
+....wait 0.02 secs
+...set command to "sonic_pi stop"
+...tell system to "run"
+..
+..if key4
+...set command to join "sonic_pi 'use_synth " cursynth
+...set command to join command "; play note(:c5)+"
+...set command to join command [base]
+...set command to join command ",sustain: 20'"
+...tell system to "run"
+...repeat until not key4
+....tell keypad to "update"
+....wait 0.02 secs
+...set command to "sonic_pi stop"
+...tell system to "run"
+..wait 0.02 secs
+

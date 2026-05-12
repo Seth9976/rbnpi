@@ -1,0 +1,31 @@
+The programs were created using a near release beta of Sonic-Pi 2.1
+Because of the processing required these programs will not work effectively on a
+Raspberry Pi, but require the more powerful resources available on the Mac version of
+Sonic Pi, although they should also work on a more powerful Linux box under say Ubuntu.
+and probably on the Windows version of Sonic Pi too, although I haven't tested this.
+
+The first program createsamples uses 6 live_coding loops to generate a pattern of notes
+related to a c minor scale, together with a background ambi_lunar_land sound. The timing
+is controlled by cue and sync commands using the metronome thread metro.
+
+The program was run three times, changing the synth between :prophet, :saw and :zawa
+In each case a sample wav file was recorded using Sonic Pi's inbuilt facility.
+The three samples were then edited using the program Audacity (open source available for
+Mac, Pi, Linux etc) and once cycle of the sounds (which lasts exactly 4 seconds) was
+extracted in each case, and saved to give the samples in the supplied folder rbn.
+
+The second program playsamples is used to play these recorded samples. They are overlapped
+each one starting 4.0/3 seconds after the previous one, and then the three saamples are
+played backwwards again at 4.0/3 second intervals. This cycle is repeated seven times, in
+a thread
+At the same time the overall volume is controlled using the set_system_volume! command.
+The volume is started at 0 and a loop is used to increase it linearly to 2 over a period
+of 12 seconds. It then remains fixed for 32 seconds plus 2/3 4 seconds, and then the
+volume decreases again to 0 over 12 seconds when the piece stops.
+Timings. Overall loop  7 times 8 plus 2/3 4 seconds = 58.67 seconds.
+
+Volume: 12 seconds vol up, 32 + 2.67 seconds constant, 12 seconds fade = 58.67 seconds
+
+To use the programs on a Mac, open then in a text editor and copy and paste into an empty
+workspace in Sonic-Pi. The samples should be placed in a convenient folder on the Mac
+and the line use_sample_pack 'Users/rbn/Desktop/samples/rbn' adjusted to suit.

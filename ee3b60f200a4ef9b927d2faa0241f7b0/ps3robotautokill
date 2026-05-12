@@ -1,0 +1,65 @@
+#!/usr/bin/python
+#ps3 controlled robot using picon zero board and edukit chassis by Robin Newman May31 2016
+#led added to output 5 with a series resistore 270 ohms
+#motors powers through 4xAA battery pack
+#ps3 afterglow wireless contrller, dongle in pizero usb socket
+#needs sudo apt-get install joystick after sudo apt-get update
+#this file placed in /usr/local/bin and sudo chmod 755 access set
+#also in /usr/local/bin piconzero.py library file
+#separate desktop file placed in ~/.config/autostart to start program running on boot
+import piconzero as pz
+import subprocess,pygame,sys
+
+pz.init()
+pygame.init()
+clock=pygame.time.Clock()
+ps3 = pygame.joystick.Joystick(0)
+ps3.init()
+gate=0.1
+pz.setOutputConfig(5,0) #set uput channel 5 digital on/off
+pz.setOutput(5,1) #led to signify protgeram is running for headless operation
+
+while True:
+    try:
+        pygame.event.pump()
+        lud=ps3.get_axis(1)
+        llr=ps3.get_axis(0)
+        bshutdown=ps3.get_button(1) #used to shutdown
+        up=-min(lud,0)
+        down=max(0,lud)
+        left=-min(llr,0)
+        right=max(0,llr)
+        if bshutdown ==1:  #this carries out shutdown
+            pz.stop()
+            pz.cleanup()
+            command="/usr/bin/sudo /sbin/shutdown -h now"
+            subprocess.Popen(command.split(),stdout=subprocess.PIPE)
+            output = process.communicate()[0]
+            print (output)
+        speed=int((abs(lud)+abs(llr))*75)
+        print("Robot data")
+        print("Speed: "+str(speed))
+        if up >gate and abs(llr) <gate:
+            pz.forward(speed)
+            print("Forward")
+        elif down >gate and abs(llr) <gate:
+           pz.reverse(speed)
+           print("Reverse")
+        elif left>gate and abs(lud) < gate:
+            pz.spinLeft (speed)
+            print("SpinLeft")
+        elif right>gate and abs(lud) <gate:
+            pz.spinRight (speed)
+            print("SpindRight")
+        elif abs(llr)<gate and abs(lud)<gate:
+            pz.stop()
+            print("Stop")
+        clock.tick(20)
+        subprocess.call("clear")
+    except KeyboardInterrupt:
+        print("\nExiting")
+        pygame.quit()
+        pz.cleanup()
+        print("Cleaned up")
+        sys.exit(1)
+

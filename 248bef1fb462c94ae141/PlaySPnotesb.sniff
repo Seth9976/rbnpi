@@ -1,0 +1,117 @@
+#program to control Sonic Pi from Flotilla written by Robin Newman, Feb 2016
+#requires rainbow, touch keypad, slider and rotary dial modules
+#to be connected to the flotilla hub
+#also requires Sonic Pi to be running and sonic-pi-cli gem
+#to be installed
+#tested on Pi2 and Mac OSX
+#version 2 uses broadcast to reduce program size
+#also allows dual use of teh leds to indicate both slider AND dial selections
+make system device
+make command string
+make flotilla device
+make keypad flotillaTouch device 
+make key1 boolean
+make key2 boolean
+make key3 boolean
+make key4 boolean
+make slider flotillaSlider device
+make position number
+make noteOffset number
+make dial flotillaDial device
+make synths list of strings
+make currSynth string
+make lastSynth string
+make index number
+make rainbow flotillaRainbow device
+make rainbowShade list of number
+make rainbowColor list of number
+make count number
+make ledCount number
+make noteVal number
+make ledChoice number
+
+
+when start
+.#set up list of synths
+.add ":tri" to synths
+.add ":saw" to synths
+.add ":tb303" to synths
+.add ":fm" to synths
+.add ":mod_tri" to synths
+.set lastSynth to ":tri" #used to check if the current synth has changed
+.set ledCount to 5
+.repeat ledCount
+..add 0 to rainbowColor #initialise the led colours to use (red)
+.
+.forever #start main loop
+.. #select the synth to use
+..tell dial to "update"
+..set index to round(position *4) + 1 #gives range 1 to 5
+..set currSynth to item index of synths #get the synth name
+..#say currSynth
+..#say [index]
+..if not currSynth = lastSynth #check if it has changed
+...set lastSynth to currSynth #is so update lastSynth
+...set ledChoice to index #set choice for led to turn on
+...broadcast ledOn #turn it on (it will flash for 0.3 seconds)
+...wait 0.3 secs
+..
+..#now check slider position
+..tell slider to "update"
+..set noteOffset to round(position *5) #set noteOffset 0..5 according to slider position
+..#say join"noteOffset: "[noteOffset]
+..#set ledChoice to noteOffset and display on rainbow
+..set ledChoice to noteOffset
+..broadcast ledOn
+..#now poll keypad, set noteVal according to key depressed and broadcast keyDown
+..#wait for completion of any keyDown even before trying another one.
+..tell keypad to "update"
+..# if a keypress is detected process the relevant note
+..if key1 
+...set noteVal to 60 + noteOffset # 60 is note :c4
+...broadcast keyDown and wait #broadcast to the routine processing keyDown
+..
+..if key2
+...set noteVal to 64 + noteOffset # 64 is note :e4
+...broadcast keyDown and wait
+..
+..if key3
+...set noteVal to 67 + noteOffset # 67 is note :g4
+...broadcast keyDown and wait
+..
+..if key4
+...set noteVal to 72 + noteOffset # 72 is note :c5
+...broadcast keyDown and wait
+..
+..wait 0.005 secs #small gap so loop is not solidly continuous
+
+
+when keyDown #handle key pressed event
+.#say "keydown"
+.set command to join "sonic_pi 'use_synth " currSynth # build up command string
+.set command to join command "; play "
+.set command to join command [noteVal]
+.set command to join command ",sustain: 20'"
+.# typical command string will be "sonic_pi 'use synth :tri, play 64+2,sustain: 20'"
+.#say command
+.tell system to "run" #send the command to sonic_cli to play the next note
+.repeat until not key1 and not key2 and not key3 and not key4 #wait till none pressed.
+..tell keypad to "update"
+..wait 0.005 secs
+.#say "keysUp"
+.set command to "sonic_pi stop" #set up command to stop
+.tell system to "run" #send stop to the sonic_cli
+
+
+when ledOn #handles displaying the selected led
+.#say [ledChoice]
+.set count to 1
+.delete all of rainbowShade #empty out previous values
+.repeat ledCount #now insert the new value in this loop
+..if ledChoice = count
+...add 10 to rainbowShade
+..else
+...add 0 to rainbowShade
+..change count by 1
+.tell rainbow to "update" #update rainbow with the new ledChoice
+ 

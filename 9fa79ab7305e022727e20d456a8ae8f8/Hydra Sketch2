@@ -1,0 +1,40 @@
+//Sonic Pi controlled code using midi and audio input by Robin Newman
+// register WebMIDI
+navigator.requestMIDIAccess()
+    .then(onMIDISuccess, onMIDIFailure);
+
+function onMIDISuccess(midiAccess) {
+    console.log(midiAccess);
+    var inputs = midiAccess.inputs;
+    var outputs = midiAccess.outputs;
+    for (var input of midiAccess.inputs.values()){
+        input.onmidimessage = getMIDIMessage;
+    }
+}
+
+function onMIDIFailure() {
+    console.log('Could not access your MIDI devices.');
+}
+
+//create an array to hold our cc values and init to a normalized value
+var cc=Array(128).fill(0.5)
+
+getMIDIMessage = function(midiMessage) {
+    var arr = midiMessage.data    
+    var index = arr[1]
+    //console.log('Midi received on cc#' + index + ' value:' + arr[2])    // uncomment to monitor incoming Midi
+    //var val = (arr[2]+1)/128.0  // normalize CC values to 0.0 - 1.0
+    var val = arr[2]
+    cc[index]=val
+}
+
+//cc[0] controls kaleid, cc[1]-cc[3] control rgb solid mask, cc[4] controls masks alpha: can blank the screen.
+//audio controls colour out of voronoi
+voronoi(3,0.3,-0.3).color(()=>a.fft[0]*3,0.9,-0.7)
+
+  .scale(0.3,1)
+  .kaleid(()=>cc[0])
+  .luma(-0.8)
+  .colorama(0.05,-0.6)
+  .mult(solid(()=> cc[1],()=> cc[2],()=> cc[3],()=> cc[4]))
+  .out(o0)

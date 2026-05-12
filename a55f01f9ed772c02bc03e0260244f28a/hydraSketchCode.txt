@@ -1,0 +1,36 @@
+ 
+//Sonic Pi drum patterns drive Hudra with audio and midi_cc controls
+//by Robin Newman, January 2023
+// register WebMIDI
+navigator.requestMIDIAccess()
+    .then(onMIDISuccess, onMIDIFailure);
+
+function onMIDISuccess(midiAccess) {
+    console.log(midiAccess);
+    var inputs = midiAccess.inputs;
+    var outputs = midiAccess.outputs;
+    for (var input of midiAccess.inputs.values()){
+        input.onmidimessage = getMIDIMessage;
+    }
+}
+
+function onMIDIFailure() {
+    console.log('Could not access your MIDI devices.');
+}
+
+//create an array to hold our cc values and init to a normalized value
+var cc=Array(128).fill(0.5)
+
+getMIDIMessage = function(midiMessage) {
+    var arr = midiMessage.data    
+    var index = arr[1]
+    //console.log('Midi received on cc#' + index + ' value:' + arr[2])    // uncomment to monitor incoming Midi
+    //var val = (arr[2]+1)/128.0  // normalize CC values to 0.0 - 1.0
+    var val = arr[2]
+    cc[index]=val
+}
+shape(8,0.1,0.001).scale(()=>cc[1]*a.fft[1]*8,1,1.5).color(0.8,0,()=>1-cc[1]*a.fft[0]).scrollX(0.22).scrollY(0)
+  .add(
+ shape(8,0.1,0.001).scale(()=>cc[2]*a.fft[1]*8,1,1.5).color(0,0.8,()=>1-cc[1]*a.fft[0]).scrollX(-0.22).scrollY(0))
+  .repeatX(2).repeatY(2).out()
+

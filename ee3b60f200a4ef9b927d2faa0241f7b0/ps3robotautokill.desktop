@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Exec=ps3robotautokill
+Icon=/usr/share/pixmaps/ps3robotautokill.png
+Terminal=true
+Name=ps3robotautokill
+Categories=Application;Development;
